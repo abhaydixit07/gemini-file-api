@@ -65,6 +65,9 @@ REMEDY = {
     'H': ['Your lungs provide the airflow for every sound, especially this one.']
 }
 
+@app.route('/')
+def home():
+    return 'Hello, World!'
 
 def check(word_given, word_recieved, check_for):
         for i in range(len(word_recieved)):
