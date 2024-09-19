@@ -1,15 +1,19 @@
 from flask import Flask, request, jsonify
-import os
+import io
 import google.generativeai as genai
 from flask_cors import CORS
 from PyPDF2 import PdfFileReader
-import io
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Configure your Google Generative AI API key
-genai.configure(api_key="AIzaSyAgR34tt43lDQpwENeiL-XgTSuZoySj-6U")
+# Configure your Google Generative AI API key from the environment variable
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def extract_text_from_pdf(file):
     """Extract text from a PDF file."""
@@ -31,6 +35,10 @@ def clean_summary(summary):
     # Ensure proper newlines
     return "\n".join(line.strip() for line in cleaned_summary.split('\n') if line.strip())
 
+@app.route('/')
+def home():
+    return "Welcome to the PDF Summarization API!"
+
 @app.route('/upload', methods=['POST'])
 def upload_and_summarize():
     if 'file' not in request.files:
@@ -42,19 +50,11 @@ def upload_and_summarize():
         return jsonify({"error": "No selected file"}), 400
 
     if file and file.filename.lower().endswith('.pdf'):
-        # Save the file temporarily
-        file_path = os.path.join(os.getcwd(), file.filename)
-        file.save(file_path)
-
-        # Upload the file to Google Generative AI API
         try:
-            sample_file = genai.upload_file(path=file_path, display_name=file.filename)
+            # Upload the file to Google Generative AI API directly from memory
+            sample_file = genai.upload_file(file.stream, display_name=file.filename)
         except Exception as e:
-            os.remove(file_path)
             return jsonify({"error": f"Error uploading file: {e}"}), 500
-
-        # Delete the local file after uploading
-        os.remove(file_path)
 
         # Choose a Gemini model
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
@@ -72,4 +72,3 @@ def upload_and_summarize():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-
