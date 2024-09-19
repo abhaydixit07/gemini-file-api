@@ -36,3 +36,5 @@ typing_extensions==4.12.2
 uritemplate==4.1.1
 urllib3==2.2.2
 Werkzeug==3.0.4
+python-dotenv==1.0.0
+
