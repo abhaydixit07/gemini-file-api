@@ -35,6 +35,10 @@ def clean_text(text):
     cleaned_text = text.replace('*', '').strip()
     return "\n".join(line.strip() for line in cleaned_text.split('\n') if line.strip())
 
+@app.route('/')
+def home():
+    return "Hello World"
+
 @app.route('/upload', methods=['POST'])
 def upload_and_summarize():
     token = request.headers.get('Authorization')
