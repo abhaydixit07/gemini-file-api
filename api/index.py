@@ -10,7 +10,8 @@ import io
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
