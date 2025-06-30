@@ -67,7 +67,7 @@ def upload_and_summarize():
             app.logger.error(f"Error reading in-memory file: {e}")
             return jsonify({"error": f"Error reading file: {e}"}), 500
 
-        model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+        model = genai.GenerativeModel(model_name="gemini-2.5-pro")
 
         try:
             response = model.generate_content([sample_file, "Summarize this document in plain text without any special formatting like bold or italic."])
@@ -114,7 +114,7 @@ def upload_and_process_image():
             app.logger.error(f"Error reading in-memory file: {e}")
             return jsonify({"error": f"Error reading file: {e}"}), 500
 
-        model = genai.GenerativeModel(model_name="gemini-1.5-pro")
+        model = genai.GenerativeModel(model_name="gemini-2.5-pro")
 
         try:
             response = model.generate_content([sample_file, "Give the text written in it."])
